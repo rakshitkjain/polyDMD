@@ -9,7 +9,7 @@ make: Creates new executables
 
 ./MD -h : Shows the help menu using command line parser (readinput.cpp)
 
-./MD -<program options> : Executes the program for your specified variables
+./MD -program options : Executes the program for your specified variables
 
 FILES:
 
