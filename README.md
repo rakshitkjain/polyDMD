@@ -33,5 +33,3 @@ For the parameter file, the format should be very specific. Follows a bit of NAM
 For multiple nonbonded potentials for the same molecule pair, inner length of next well should be the same as the outer length of the previous well (this is there in the parameter file ".par" extension)
 
 Now we are implementing the false positioning method as well. So the coordinates stored at any time are not the actual coordinates, rather the coordinates at the last update
-
-budbudbudbubdubd
