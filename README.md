@@ -34,4 +34,3 @@ For multiple nonbonded potentials for the same molecule pair, inner length of ne
 
 Now we are implementing the false positioning method as well. So the coordinates stored at any time are not the actual coordinates, rather the coordinates at the last update
 
-Checking for commits
