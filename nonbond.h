@@ -17,4 +17,3 @@ class NONBOND
 #endif
 
 //Nonbonlist is now defined using the atomtypes
-
