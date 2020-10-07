@@ -548,7 +548,8 @@ void System::velocity_initialization()
 	cout<<"N = "<<N<<endl;
 //For maxwell boltzmann distribution of molecules
 	std::random_device rd{};					
-   	std::mt19937 gen{rd()};
+//   	std::mt19937 gen{rd()};
+	std::mt19937 gen{0};
 	std::normal_distribution<> d1{0,1};				//0 is mean, 1 is SD
 	std::normal_distribution<> d2{0,1};
 	std::normal_distribution<> d3{0,1};
@@ -578,7 +579,7 @@ void System::velocity_initialization()
 		avg_com_mv2 = avg_com_mv2 + P[i].velocity2*P[i].mass;
 		//New momentum after updating particle velocity
 		momentum_counter=P[i].velocity*P[i].mass;
-		avg_com_momentum_new = avg_com_momentum_new + momentum_counter;
+		avg_com_momentum_new = avg_com_momentum_new + momentum_counter; 
 	}
 
 	avg_com_momentum_new = avg_com_momentum_new/net_mass;
