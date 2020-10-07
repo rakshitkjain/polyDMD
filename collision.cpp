@@ -121,8 +121,8 @@ void Collision::Bump(double L, int N)
 //Moving just the colliding particles ahead to their true positions
 		TC.col_partner = TC.Partner[TC.collider];	
 
-//		TC.S.P[TC.collider].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[TC.collider], TC.S.TIME, TC.S.fpupdate_TIME);
-//		TC.S.P[TC.col_partner].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[TC.col_partner], TC.S.TIME, TC.S.fpupdate_TIME);
+		TC.S.P[TC.collider].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[TC.collider], TC.S.TIME, TC.S.fpupdate_TIME);
+		TC.S.P[TC.col_partner].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[TC.col_partner], TC.S.TIME, TC.S.fpupdate_TIME);
 
 		didcellchange = false;
 
@@ -145,7 +145,7 @@ void Collision::Bump(double L, int N)
 
 		calculator.coordinate = TC.S.P[TC.collider].coordinate - TC.S.P[TC.col_partner].coordinate;
 		calculator.velocity = TC.S.P[TC.collider].velocity - TC.S.P[TC.col_partner].velocity;
-		calculator.coordinate=TC.S.OneParticlePositionUpdater(calculator, TC.S.TIME, TC.S.fpupdate_TIME);
+//		calculator.coordinate=TC.S.OneParticlePositionUpdater(calculator, TC.S.TIME, TC.S.fpupdate_TIME);
 		TC.S.min_img(calculator.coordinate, L);
 		r2 = calculator.coordinate.norm2();
 		reduced_mass = TC.S.P[TC.collider].mass*TC.S.P[TC.col_partner].mass/(TC.S.P[TC.collider].mass + TC.S.P[TC.col_partner].mass);
@@ -240,8 +240,8 @@ void Collision::Bump(double L, int N)
 		TC.S.P[TC.collider].velocity2 = TC.S.P[TC.collider].velocity.norm2();
 		TC.S.P[TC.col_partner].velocity2 = TC.S.P[TC.col_partner].velocity.norm2();
 		//Moving the particles backwards in time with the new velocities given
-//		TC.S.P[TC.collider].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[TC.collider], TC.S.TIME, TC.S.fpupdate_TIME);
-//		TC.S.P[TC.col_partner].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[TC.col_partner], TC.S.TIME, TC.S.fpupdate_TIME);
+		TC.S.P[TC.collider].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[TC.collider], TC.S.TIME, TC.S.fpupdate_TIME);
+		TC.S.P[TC.col_partner].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[TC.col_partner], TC.S.TIME, TC.S.fpupdate_TIME);
 
 //		cout<<"Particle 1 x = "<<TC.S.P[TC.collider].coordinate.x<<"\t y = "<<TC.S.P[TC.collider].coordinate.y<<"\t z = "<<TC.S.P[TC.collider].coordinate.z<<"\t i ="<<TC.collider<<endl;
 //		cout<<"Particle 2 x = "<<TC.S.P[TC.col_partner].coordinate.x<<"\t y = "<<TC.S.P[TC.col_partner].coordinate.y<<"\t z = "<<TC.S.P[TC.col_partner].coordinate.z<<"\t j ="<<TC.col_partner<<endl;
