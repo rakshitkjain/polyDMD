@@ -47,7 +47,8 @@ int Collision::AndersenThermostat()
 //Will be used to obtain a seed for the random number engine
 	std::random_device rd;  									
 //Standard mersenne_twister_engine seeded with rd()
-	std::mt19937 gen(rd());										
+//	std::mt19937 gen(rd());										
+	std::mt19937 gen{0};
 //For selecting particle number
 	std::uniform_real_distribution<> par(0.0, 1.0);							
 	n = int(double(TC.S.N)*par(gen));
@@ -64,7 +65,8 @@ int Collision::AndersenThermostat()
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
 //Will be used to obtain a seed for the random number engine
 	std::random_device rd1;  									
-  	std::mt19937 gen1{rd1()};
+//  	std::mt19937 gen1{rd1()};
+	std::mt19937 gen1{0};
 //For getting a gaussian velocity profile
 	std::normal_distribution<> d1{0,1};
 	std::normal_distribution<> d2{0,1};								
