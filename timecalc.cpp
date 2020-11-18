@@ -105,6 +105,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 		potential_inner = 1.0e08;							
 		potential_outer = 1.0e08;
 	}
+	cout<<"Coltype eval for i="<<i<<"\t j="<<j<<"\t event_type="<<event_type<<"\t  r_inner="<<r_inner<<"\t r_outer="<<r_outer<<"\t epsilon_now"<<epsilon_now<<"\t epsilon_inner"<<epsilon_inner<<"\t epsilon_outer="<<epsilon_outer<<endl;
 //Checking if inside square well or bond well, depending on the type of collision
 	c1 = r2 - r_inner2;
 	c2 = r2 - r_outer2;
@@ -277,7 +278,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 			cout<<S.P[j].coordinate.z<<"\tP2vx="<<S.P[j].velocity.vx<<"\tP2vy=";
 			cout<<S.P[j].velocity.vy<<"\tP2vz="<<S.P[j].velocity.vz<<endl;
 			cout<<"TIME="<<S.TIME<<"\tfp_TIME="<<S.fpupdate_TIME<<endl;
-//			exit(1);
+			exit(1);
 		}
 	}
 	
