@@ -121,6 +121,7 @@ int main(int argc, char *argv[])
 				//Neither celllist nor neighborlist used
 				else if(!(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 				{
+<<<<<<< HEAD
 					for (i=0; i<C.TC.S.N; i++)
 					{
 						if(i==C.TC.collider)
@@ -132,6 +133,8 @@ int main(int argc, char *argv[])
 						if(C.TC.Partner[i]==C.TC.col_partner)
 							{cout<<"i for C.TC.Partner[i]=C.TC.col_partner="<<i<<endl;}
 					}
+=======
+>>>>>>> 430543c7959c582024830da7188cc6bd51eee8b9
 					//Updating timelist after collision
 					for (int i=0; i<C.TC.S.N; i++)
 					{
