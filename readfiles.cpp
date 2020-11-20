@@ -660,13 +660,9 @@ void ReadFiles::ReadParameterFile(std::string FileName, vector<Particle> &P, vec
 //					for(int l =0; l<nonbondlist.size(); l++)
 //					{//Making sure that this pair is not a case of multiple potentials
 //						if(nonbondlist[l].partner1 == i && nonbondlist[l].partner2 == j)
-<<<<<<< HEAD
 //						{//If multiple potentials and this is the first one
 					cout<<line<<endl;
-					
-=======
 //						{//If multiple potentials
->>>>>>> 430543c7959c582024830da7188cc6bd51eee8b9
 					if(nonbondlist[i].L1.size() == 0)
 					{
 						nonbondlist[i].L1.push_back(L1);
@@ -682,16 +678,12 @@ void ReadFiles::ReadParameterFile(std::string FileName, vector<Particle> &P, vec
 							nonbondlist[i].epsilon.push_back(epsilon);
 						}//Do nothing if repetition 
 						else if(nonbondlist[i].L2[nonbondlist[i].L2.size()]==L2 && nonbondlist[i].L1[nonbondlist[i].L1.size()]==L1 && nonbondlist[i].epsilon[nonbondlist[i].epsilon.size()]==epsilon)
-<<<<<<< HEAD
 						{cout<<"entering here as well"<<endl;}
 						else//Something weird is happening then
 						{
 							cout<<"Weird stuff reading from the parameter file"<<endl;
 							exit(1);
 						}
-=======
-						{}
->>>>>>> 430543c7959c582024830da7188cc6bd51eee8b9
 					}
 //							nonbond_found = true;
 //							break;
