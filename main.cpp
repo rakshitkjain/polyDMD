@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 				//Neither celllist nor neighborlist used
 				else if(!(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 				{
-					for (i=0; i<C.TC.S.N; i++)
+/*					for (i=0; i<C.TC.S.N; i++)
 					{
 						if(i==C.TC.collider)
 							{cout<<"i for C.TC.collider="<<C.TC.collider<<endl;}
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 						if(C.TC.Partner[i]==C.TC.col_partner)
 							{cout<<"i for C.TC.Partner[i]=C.TC.col_partner="<<i<<endl;}
 					}
-					//Updating timelist after collision
+					//Updating timelist after collision*/
 					for (int i=0; i<C.TC.S.N; i++)
 					{
 						if(i==thermostat_particle||C.TC.Partner[i]==thermostat_particle)
@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
 		//neither celllist not neighborlist used
 		else if(!(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 		{
-			for (i=0; i<C.TC.S.N; i++)
+/*			for (i=0; i<C.TC.S.N; i++)
 			{
 				if(i==C.TC.collider)
 				{cout<<"i for C.TC.collider="<<C.TC.collider<<endl;}
@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
 				if(C.TC.Partner[i]==C.TC.col_partner)
 				{cout<<"i for C.TC.Partner[i]=C.TC.col_partner="<<i<<endl;}
 			}
-			//Updating timelist after collision
+			//Updating timelist after collision*/
 			for (i=0; i<C.TC.S.N; i++)
 			{
 				if(i == C.TC.collider || C.TC.Partner[i] == C.TC.collider || i == C.TC.col_partner || C.TC.Partner[i] == C.TC.col_partner)

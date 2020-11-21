@@ -272,15 +272,15 @@ void Collision::AllParticlePositionUpdater(int N, vector<Particle> &P, double TI
 	//Move all the particles to the new positions
 	for(int count=0; count<N; count++)
 	{
-		cout<<"i="<<count<<"\tX= "<<P[count].coordinate.x<<"\tY= "<<P[count].coordinate.y<<"\tZ= ";
-		cout<<P[count].coordinate.z<<"\tVX= "<<P[count].velocity.vx<<"\tVY= "<<P[count].velocity.vy;
-		cout<<"\tVZ= "<<P[count].velocity.vz<<endl;
+//		cout<<"i="<<count<<"\tX= "<<P[count].coordinate.x<<"\tY= "<<P[count].coordinate.y<<"\tZ= ";
+//		cout<<P[count].coordinate.z<<"\tVX= "<<P[count].velocity.vx<<"\tVY= "<<P[count].velocity.vy;
+//		cout<<"\tVZ= "<<P[count].velocity.vz<<endl;
 
 		P[count].coordinate=TC.S.OneParticlePositionUpdater(P[count], TIME, fpupdate_TIME);
 
-		cout<<"i="<<count<<"\tX= "<<P[count].coordinate.x<<"\tY= "<<P[count].coordinate.y<<"\tZ= ";
-		cout<<P[count].coordinate.z<<"\tVX= "<<P[count].velocity.vx<<"\tVY= "<<P[count].velocity.vy;
-		cout<<"\tVZ= "<<P[count].velocity.vz<<endl;
+//		cout<<"i="<<count<<"\tX= "<<P[count].coordinate.x<<"\tY= "<<P[count].coordinate.y<<"\tZ= ";
+//		cout<<P[count].coordinate.z<<"\tVX= "<<P[count].velocity.vx<<"\tVY= "<<P[count].velocity.vy;
+//		cout<<"\tVZ= "<<P[count].velocity.vz<<endl;
 
 	}
 }
