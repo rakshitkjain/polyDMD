@@ -105,7 +105,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 		potential_inner = 1.0e08;							
 		potential_outer = 1.0e08;
 	}
-	cout<<"Coltype eval for i="<<i<<"\t j="<<j<<"\t event_type="<<event_type<<"\t  r_inner="<<r_inner<<"\t r_outer="<<r_outer<<"\t epsilon_now"<<epsilon_now<<"\t epsilon_inner"<<epsilon_inner<<"\t epsilon_outer="<<epsilon_outer<<endl;
+//	cout<<"Coltype eval for i="<<i<<"\t j="<<j<<"\t event_type="<<event_type<<"\t  r_inner="<<r_inner<<"\t r_outer="<<r_outer<<"\t epsilon_now"<<epsilon_now<<"\t epsilon_inner"<<epsilon_inner<<"\t epsilon_outer="<<epsilon_outer<<endl;
 //Checking if inside square well or bond well, depending on the type of collision
 	c1 = r2 - r_inner2;
 	c2 = r2 - r_outer2;
@@ -367,16 +367,16 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 	}*/
 	if(t < TimeList[i] && t > 1.0e-11)
 	{
-		cout<<"i="<<i<<"\t j="<<j<<"\t t="<<t<<"\t r2="<<r2<<"\t c2="<<c2;
-		cout<<"\tevent_type="<<event_type<<"\tcol_type"<<col_type<<endl;
-		cout<<"\t P1x="<<S.P[i].coordinate.x<<"\t P1y="<<S.P[i].coordinate.y;
-		cout<<"\t P1z="<<S.P[i].coordinate.z<<endl;
-		cout<<"\t P2x="<<S.P[j].coordinate.x<<"\t P2y="<<S.P[j].coordinate.y;
-		cout<<"\t P2z="<<S.P[j].coordinate.z<<endl;
-		cout<<"\t P1vx="<<S.P[i].velocity.vx<<"\t P1vy="<<S.P[i].velocity.vy;
-		cout<<"\t P1vz="<<S.P[i].velocity.vz<<endl;
-		cout<<"\t P2vx="<<S.P[j].velocity.vx<<"\t P2vy="<<S.P[j].velocity.vy;
-		cout<<"\t P2vz="<<S.P[j].velocity.vz<<endl;
+//		cout<<"i="<<i<<"\t j="<<j<<"\t t="<<t<<"\t r2="<<r2<<"\t c2="<<c2;
+//		cout<<"\tevent_type="<<event_type<<"\tcol_type"<<col_type<<endl;
+//		cout<<"\t P1x="<<S.P[i].coordinate.x<<"\t P1y="<<S.P[i].coordinate.y;
+//		cout<<"\t P1z="<<S.P[i].coordinate.z<<endl;
+//		cout<<"\t P2x="<<S.P[j].coordinate.x<<"\t P2y="<<S.P[j].coordinate.y;
+//		cout<<"\t P2z="<<S.P[j].coordinate.z<<endl;
+//		cout<<"\t P1vx="<<S.P[i].velocity.vx<<"\t P1vy="<<S.P[i].velocity.vy;
+//		cout<<"\t P1vz="<<S.P[i].velocity.vz<<endl;
+//		cout<<"\t P2vx="<<S.P[j].velocity.vx<<"\t P2vy="<<S.P[j].velocity.vy;
+//		cout<<"\t P2vz="<<S.P[j].velocity.vz<<endl;
 		TimeList[i] = t;
 		Partner[i] = j;
 		Collision_type[i] = col_type;
