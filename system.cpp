@@ -231,7 +231,7 @@ double System::pe(vector<Particle> &P, int N)
 //Function to calculate the kinetic energy
 double System::ke(vector<Particle> &P, int N)
 {
-	double kinetic_energy;
+	double kinetic_energy=0;
 	for(int i=0; i<N; i++)
 	{
 		kinetic_energy = kinetic_energy + 0.5*P[i].mass*P[i].velocity2;

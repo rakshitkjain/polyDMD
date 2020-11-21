@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-	int a,i, f, col_counter, ghost_counter = 0;
+	int a,i, f, col_counter, ghost_counter = 0, fpupdate_counter = 0;
 	double tmin, tmin1, start_time;
 //Initial and Final kinetic and total energy
 	double eni_ke = 0, enf_ke = 0, eni_te = 0, enf_te = 0;			
@@ -170,6 +170,7 @@ int main(int argc, char *argv[])
 			}
 		//Rewriting fpupdate_TIME to the last time when system was updated
 			C.TC.S.fpupdate_TIME=C.TC.S.TIME;
+			fpupdate_counter=fpupdate_counter+1;
 		}
 		//If only cell list, use cell list functions
 		if(C.TC.S.celllist_counter && (!C.TC.S.neighborlist_counter))
@@ -351,7 +352,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -367,7 +369,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -382,7 +385,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -397,7 +401,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -412,7 +417,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -427,7 +433,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -442,7 +449,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -457,7 +465,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -472,7 +481,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
