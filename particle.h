@@ -8,14 +8,14 @@
 class Particle
 {
 public:
-	XYZ coordinate;					//coordinates
+	XYZ coordinate;				//coordinates
 	VEL velocity;					//velocity
 	double velocity2;				//net speed of the particle
 	int cell_ID;					//ID of cell list location
 	std::string type;				//Type of atom: ATOM/HETATOM etc.
 	std::string name;				//Atom name which incorporates the geometry (N2, C3 etc)
 	std::string resname;				//Residue name for the particle (CT2, ACY etc)
-	char chaintype;					//Chaintype, to identify multiples of same residue (C, A, W etc)
+	char chaintype;				//Chaintype, to identify multiples of same residue (C, A, W etc)
 	int chainnumber;				//Each chain has a different number and different residues have a different number
 	double occupancy;				//Still NOT CLEAR ON THESE TWO
 	double tempfactor;				//Still NOT CLEAR ON THESE TWO
