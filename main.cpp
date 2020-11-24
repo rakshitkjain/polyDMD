@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
 			{
 				//Thermostat, returns the particle on which it is applied
 				thermostat_particle = C.AndersenThermostat();
+				cout<<"The thermostat_particle is: "<<thermostat_particle<<endl;
 				//When thermostat, count as ghost collision					
 				ghost_counter = ghost_counter +1;
 				//Now you have to re-form the timelist of the concerned particle(s)
@@ -98,7 +99,7 @@ int main(int argc, char *argv[])
 					//Updating timelist after collision
 					for (int i=0; i<C.TC.S.N; i++)
 					{
-						if(i==thermostat_particle||C.TC.Partner[i]==thermostat_particle)
+						if(i==thermostat_particle || C.TC.Partner[i]==thermostat_particle)
 						{				
 							C.TC.UpdateUpCellList(i, C.TC.S.N);
 						}

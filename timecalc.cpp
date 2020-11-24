@@ -117,7 +117,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 	{
 //particles inside square well (BY THE CURRENT FORMULATION, THIS IS ALWAYS TRUE, BUT STILL KEEP FOR SOME TIME)
 //Taking the small value because it is the margin of error
-		if(c2/r_outer2 <= 1.0e-5 && r_outer != S.L)						
+		if(c2/r_outer2 <= 1.0e-4 && r_outer != S.L)						
 		{
 			if(D1 > 0)						//Cores Collision
 			{
@@ -170,7 +170,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 			}
 		}
 //This means that the particles are outside square well, only possible collisions are 1, 2, 0 (which is 4 for no boundaries)
-		else if(c2/r_outer2 <= 1.0e-5 && r_outer == S.L)	
+		else if(c2/r_outer2 <= 1.0e-4 && r_outer == S.L)	
 		{
 			if(D1 > 0)						//Cores Collision
 			{
@@ -236,7 +236,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 //Centers going away from each other, b>0
 	else									
 	{
-		if(c2/r_outer2 <= 1.0e-5 && r_outer != S.L)				//Inside square well
+		if(c2/r_outer2 <= 1.0e-4 && r_outer != S.L)				//Inside square well
 		{
 			t = (-b + sqrt(D2))/counter.velocity2;
 			col_type = 3;
@@ -258,7 +258,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 				{col_type=4;}				//Transfer on right side
 		}
 //Centers are going away and it is outside the square well, so can only have collision type 0
-		else if(c2/r_outer2 <= 1.0e-5 && r_outer == S.L)
+		else if(c2/r_outer2 <= 1.0e-4 && r_outer == S.L)
 		{
 			t=timbig;
 			col_type=0;

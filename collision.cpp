@@ -43,12 +43,14 @@ int Collision::AndersenThermostat()
 {
 	int n;
 	double vx, vy, vz, v2 = 0;
-	VEL thermostat_vel, com_vel;
+	VEL thermostat_vel, com_vel, deltav;
+	Particle n_old, n_new;
+	XYZ deltax;
 //Will be used to obtain a seed for the random number engine
 	std::random_device rd;  									
 //Standard mersenne_twister_engine seeded with rd()
-//	std::mt19937 gen(rd());										
-	std::mt19937 gen{0};
+	std::mt19937 gen(rd());										
+//	std::mt19937 gen{0};
 //For selecting particle number
 	std::uniform_real_distribution<> par(0.0, 1.0);							
 	n = int(double(TC.S.N)*par(gen));
@@ -63,6 +65,7 @@ int Collision::AndersenThermostat()
 //A possible error can be that you aren't reforming timelist after changing the particle velocities, for all the particles, but it might not be necessary as low velocity change
 //Moving the particle to the actual position
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
+	n_old=TC.S.P[n];
 //Will be used to obtain a seed for the random number engine
 	std::random_device rd1;  									
 //  	std::mt19937 gen1{rd1()};
@@ -93,8 +96,21 @@ int Collision::AndersenThermostat()
 			{TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;}
 	}
 	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
-//Moving the particle back in time but with the new velocity
+//Reinitialized the velocity, updating to make sure it is the true position.
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
+	n_new=TC.S.P[n];
+	n_new.coordinate=TC.S.OneParticlePositionUpdater(n_new,TC.S.TIME,TC.S.fpupdate_TIME);
+	deltax= n_new.coordinate-n_old.coordinate;
+	deltav.vx=deltax.x/(TC.S.TIME-TC.S.fpupdate_TIME);
+	deltav.vy=deltax.y/(TC.S.TIME-TC.S.fpupdate_TIME);
+	deltav.vz=deltax.z/(TC.S.TIME-TC.S.fpupdate_TIME);
+	TC.S.P[n].velocity=TC.S.P[n].velocity+deltav;
+	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
+
+	cout<<"Thermostat particle= "<<n<<"\t deltax_x= "<<deltax.x<<"\t deltax_y= "<<deltax.y<<"\t deltax_z="<<deltax.z<<endl;
+	cout<<"deltav.vx= "<<deltav.vx<<"\t deltav.vy= "<<deltav.vy<<"\t deltav.vz= "<<deltav.vz<<endl;
+
+//Moving the particle back in time but with the new velocity
 
 	return n;
 }
