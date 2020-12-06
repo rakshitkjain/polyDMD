@@ -564,27 +564,28 @@ void System::velocity_initialization()
 		avg_center_of_mass_momentum = avg_center_of_mass_momentum + momentum_counter;
 		avg_com_mv2 = avg_com_mv2 + P[i].velocity.norm2()*P[i].mass;
 		net_mass = net_mass + P[i].mass;
+		P[i].velocity2 = P[i].velocity.norm2();
 	}
 
 	avg_center_of_mass_momentum = avg_center_of_mass_momentum/net_mass;
 	avg_com_mv2 = avg_com_mv2/net_mass;
 	cout<<"COM_vx = "<<avg_center_of_mass_momentum.vx<<"\tCOM_vy = "<<avg_center_of_mass_momentum.vy<<"\tCOM_vz = "<<avg_center_of_mass_momentum.vz<<"\tCOM_v2 = "<<avg_com_mv2<<endl;
-	for(int i=0; i<N; i++)
-	{
+//	for(int i=0; i<N; i++)
+//	{
 		//Making com velocity zero and scaling to give required thermal velocities
-		momentum_counter=avg_center_of_mass_momentum*P[i].mass;
-		P[i].velocity = P[i].velocity-momentum_counter;	
+//		momentum_counter=avg_center_of_mass_momentum*P[i].mass;
+//		P[i].velocity = (P[i].velocity-momentum_counter)*sqrt(temperature/P[i].mass);	
 //		cout<<"P[i].velocity.vx = "<<P[i].velocity.vx<<"\t P[i].velocity.vy = "<<P[i].velocity.vy<<"\t P[i].velocity.vz = "<<P[i].velocity.vz<<endl;
-		P[i].velocity2 = P[i].velocity.norm2();
-		avg_com_mv2 = avg_com_mv2 + P[i].velocity2*P[i].mass;
+//		P[i].velocity2 = P[i].velocity.norm2();
+//		avg_com_mv2 = avg_com_mv2 + P[i].velocity2*P[i].mass;
 		//New momentum after updating particle velocity
-		momentum_counter=P[i].velocity*P[i].mass;
-		avg_com_momentum_new = avg_com_momentum_new + momentum_counter; 
-	}
+//		momentum_counter=P[i].velocity*P[i].mass;
+//		avg_com_momentum_new = avg_com_momentum_new + momentum_counter; 
+//	}
 
-	avg_com_momentum_new = avg_com_momentum_new/net_mass;
-	avg_com_mv2 = avg_com_mv2/net_mass;
-	cout<<"COM_vx = "<<avg_com_momentum_new.vx<<"\tCOM_vy = "<<avg_com_momentum_new.vy<<"\tCOM_vz = "<<avg_com_momentum_new.vz<<"\tCOM_v2 = "<<avg_com_mv2<<endl;
+//	avg_com_momentum_new = avg_com_momentum_new/net_mass;
+//	avg_com_mv2 = avg_com_mv2/net_mass;
+//	cout<<"COM_vx = "<<avg_com_momentum_new.vx<<"\tCOM_vy = "<<avg_com_momentum_new.vy<<"\tCOM_vz = "<<avg_com_momentum_new.vz<<"\tCOM_v2 = "<<avg_com_mv2<<endl;
 	//Defining maxvel for neighborlist calculation
 	for(int i = 0; i<N; i++)
 	{
