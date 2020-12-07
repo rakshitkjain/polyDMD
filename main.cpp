@@ -172,6 +172,11 @@ int main(int argc, char *argv[])
 		//Rewriting fpupdate_TIME to the last time when system was updated
 			C.TC.S.fpupdate_TIME=C.TC.S.TIME;
 			fpupdate_counter=fpupdate_counter+1;
+		//Writing restart, datafiles and updating RDF everytime when particles at actual positions
+			writer.WriteDump(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.L, C.TC.S.filename_out);
+			writer.RestartFile(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
+			writer.DCDWriteStep(C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
+			rdf.RDF_r(C.TC.S.L, C.TC.S.N, C.TC.S.P, C.TC.S.maxbin);
 		}
 		//If only cell list, use cell list functions
 		if(C.TC.S.celllist_counter && (!C.TC.S.neighborlist_counter))
@@ -309,22 +314,18 @@ int main(int argc, char *argv[])
 			cout<<"Crashing due to wrong assigment of the particle being moved"<<endl;
 			exit(1);
 		}
-		//Writing restart, datafiles and upating RDF after every fixed no. of collisions
+		//Data printed at every update frequency
 		if(a%(C.TC.S.print_freq*C.TC.S.fpupdate_freq) == 0)
 		{
-			writer.WriteDump(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.L, C.TC.S.filename_out);
-			writer.RestartFile(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
-			writer.DCDWriteStep(C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
-			rdf.RDF_r(C.TC.S.L, C.TC.S.N, C.TC.S.P, C.TC.S.maxbin);
-		}
-//			writer.WriteDump(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.L, C.TC.S.filename_out);
-
 		//Calculation of KE, PE, TE, momentum
-		kineticenergy = C.TC.S.ke(C.TC.S.P, C.TC.S.N);
-		totalenergy = kineticenergy + C.TC.S.potential_energy;		
-		momentum = C.TC.S.net_momentum(C.TC.S.P, C.TC.S.N);						
+			kineticenergy = C.TC.S.ke(C.TC.S.P, C.TC.S.N);
+			totalenergy = kineticenergy + C.TC.S.potential_energy;		
+			momentum = C.TC.S.net_momentum(C.TC.S.P, C.TC.S.N);						
 		//Time variation file printing
-		writer.TimeVarFile(C.TC.S.TIME, kineticenergy, C.TC.S.potential_energy, totalenergy, momentum, C.TC.S.filename_out);
+			writer.TimeVarFile(C.TC.S.TIME, kineticenergy, C.TC.S.potential_energy, totalenergy, momentum, C.TC.S.filename_out);
+		}
+
+
 //		if(a%50 == 0 && !(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 //		{			
 //				{C.TC.Collision_time(C.TC.S.L, C.TC.S.N);}				

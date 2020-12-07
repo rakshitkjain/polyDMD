@@ -14,7 +14,7 @@ void ReadInput::printHelpMessage()
 	cout<<"  -f, neighborlist_factor->Factor to multiply the largest potential width (default 2.0)"<<endl;
 	cout<<"  -q, bond_delta---------->Change in bond length allowed (default 0.0375)"<<endl;
 	cout<<"  -a, andersen_freq------->One out of every andersen_freq collisions will be a ghost collision (default 10)"<<endl;
-	cout<<"  -pf, print_freq--------->Print frequency and restart file write, multiply by fpupdate_freq (default 1)"<<endl;
+	cout<<"  -pf, print_freq--------->Print frequency for data, multiply by fpupdate_freq (default 0.001)"<<endl;
 	cout<<"  -p, fpupdate_freq------->False position update frequency (default 1000)"<<endl;
 	cout<<"  -b, burn_percent-------->Fraction of nsweep which are for burning (no thermostat, no virial, no rdf) (default 0.1)"<<endl;
 	cout<<"  -pdb, filename_pdb------>PDB filename (Simul won't work without filename) (default test.pdb)"<<endl;
@@ -35,7 +35,7 @@ int ReadInput::ReadVariables(int argc, vector<string> arguments)//reading x, y a
 {
 //Writing the default values of the parameters, which we use if no flag specified
 	initialize.L = 20; initialize.nsweep = 1000; initialize.maxbin = 1000; initialize.andersen_freq = 10; 
-	initialize.print_freq = 1; initialize.fpupdate_freq = 1000; initialize.burn_percent = 0.1;
+	initialize.print_freq = 0.001; initialize.fpupdate_freq = 1000; initialize.burn_percent = 0.1;
 	initialize.temperature = 30.0;	initialize.bond_delta = 0.0375; initialize.cellwidth = 10.0; 
 	initialize.neighborlist_factor = 2.0; initialize.maxvel = 10.0;
 	initialize.filename_pdb = "test.pdb"; initialize.filename_psf = "test.psf"; 
