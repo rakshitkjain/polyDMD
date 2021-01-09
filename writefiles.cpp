@@ -2,9 +2,10 @@
 
 void WriteFiles::DCDHeader(double Start_timestep, int N, std::string FileName)
 {
-	int zero = 0;
+	int zero=0, twentyfour=24, onesixtyfour=164, two=2;
 	int number = 84;
-	int time_bw = 1;	//Time between saves, just storing for the sake of it
+	int num_timesteps=0;	//number of timesteps stored in dcd file, right now 0 
+	int time_bw = 1;	//Time between saves, just storing for the sake of it (Maybe make DCD freq by time spent?)
 	float delta = 1; 	//Trajectory timestep
 	int nlines = 2;		//Number of 80 byte lines for the header
 	char cord[4] = {'C','O','R','D'};
@@ -17,21 +18,33 @@ void WriteFiles::DCDHeader(double Start_timestep, int N, std::string FileName)
         outputFile.open(FileName1, std::ios::out | std::ios::binary);
 
 	outputFile.write(reinterpret_cast<const char*>(&number), sizeof(int));
-	for(int i = 0; i< 4; i++)
-	{
-		outputFile.write(reinterpret_cast<const char*>(&cord[i]), sizeof(char));
-	}
-	outputFile.write(reinterpret_cast<const char*>(&dcd_sets), sizeof(int));
-	outputFile.write(reinterpret_cast<const char*>(&number), sizeof(int));
-//	outputFile.write(reinterpret_cast<const char*>(&Start_timestep), sizeof(float));	//Start_timestep: when you start recording the simulation (ISTART)
-//	outputFile.write(reinterpret_cast<const char*>(&time_bw), sizeof(int));
-	for(int i = 0; i< 76; i++)
+//	for(int i = 0; i< 4; i++)
+//	{
+	outputFile.write(reinterpret_cast<const char*>(&cord), sizeof(char));
+//	}
+	outputFile.write(reinterpret_cast<const char*>(&zero), sizeof(int));
+//Start_timestep: when you start recording the simulation (ISTART)
+	outputFile.write(reinterpret_cast<const char*>(&Start_timestep), sizeof(float));	
+	outputFile.write(reinterpret_cast<const char*>(&time_bw), sizeof(int));
+	outputFile.write(reinterpret_cast<const char*>(&num_timesteps), sizeof(int));
+//	outputFile.write(reinterpret_cast<const char*>(&dcd_sets), sizeof(int));
+//	outputFile.write(reinterpret_cast<const char*>(&number), sizeof(int));
+
+	for(int i = 0; i< 5; i++)
 	{
 		outputFile.write(reinterpret_cast<const char*>(&zero), sizeof(int));
 	}
+//making it a CHARMM format file
+	outputFile.write(reinterpret_cast<const char*>(&delta), sizeof(float));
+	outputFile.write(reinterpret_cast<const char*>(&zero), sizeof(int));
+	for(int i = 0; i< 8; i++)
+	{
+		outputFile.write(reinterpret_cast<const char*>(&zero), sizeof(int));
+	}
+	outputFile.write(reinterpret_cast<const char*>(&twentyfour), sizeof(int));
 	outputFile.write(reinterpret_cast<const char*>(&number), sizeof(int));
-	outputFile.write(reinterpret_cast<const char*>(&number), sizeof(int));
-//	outputFile.write(reinterpret_cast<const char*>(&delta), sizeof(float));
+	outputFile.write(reinterpret_cast<const char*>(&onesixtyfour), sizeof(int));
+	outputFile.write(reinterpret_cast<const char*>(&two), sizeof(int));
 //      for(int i = 0; i< 9; i++)
 //      {
 //              outputFile.write(reinterpret_cast<const char*>(&zero), sizeof(int));
@@ -207,7 +220,8 @@ void WriteFiles::RestartFile(double TIMESTEP, vector<Particle> &P, int N, std::s
 	      string name;
 	      for(int i=0; i<N; i++)
 	      {
-	            out<<setw(6)<<i+1<<"\t"<<setw(8)<<P[i].coordinate.x<<"\t"<<setw(8)<<P[i].coordinate.y<<"\t"<<setw(8)<<P[i].coordinate.z<<"\t"<<setw(8)<<P[i].velocity.vx<<"\t"<<setw(8)<<P[i].velocity.vy<<"\t"<<setw(8)<<P[i].velocity.vz<<endl;
+		out<<setw(6)<<i+1<<"\t"<<setw(8)<<P[i].coordinate.x<<"\t"<<setw(8)<<P[i].coordinate.y<<"\t"<<setw(8)<<P[i].coordinate.z<<"\t"<<setw(8)<<P[i].velocity.vx;
+		out<<"\t"<<setw(8)<<P[i].velocity.vy<<"\t"<<setw(8)<<P[i].velocity.vz<<endl;
 	      }
       out.close();	
 }

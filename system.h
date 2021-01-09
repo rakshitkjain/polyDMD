@@ -41,7 +41,8 @@ class System
 //Partial filename for output files
 		std::string filename_out, filename_par;	
 //Printing frequency, false positioning update frequency
-		int print_freq, fpupdate_freq;				
+		int fpupdate_freq;
+		double print_freq;				
 //Fraction of nsweep to be used as burning collisions
 		double burn_percent;			
 //Particle positions

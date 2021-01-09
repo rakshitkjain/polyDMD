@@ -87,14 +87,16 @@ int Collision::AndersenThermostat()
 			{com_vel = com_vel + TC.S.P[i].velocity;}
 	}
 	com_vel = com_vel/TC.S.N;
+	cout<<"Using thermostat, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
 
-	for (int i = 0; i<TC.S.N; i++)
-	{
-		if(i == n)
-			{ TC.S.P[i].velocity = thermostat_vel - com_vel;}
-		else
-			{TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;}
-	}
+ 	TC.S.P[n].velocity = thermostat_vel;
+//	for (int i = 0; i<TC.S.N; i++)
+//	{
+//		if(i == n)
+//			{ TC.S.P[i].velocity = thermostat_vel - com_vel;}
+//		else
+//			{TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;}
+//	}
 	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
 //Reinitialized the velocity, updating to make sure it is the true position.
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);

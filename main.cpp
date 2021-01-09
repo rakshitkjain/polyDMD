@@ -81,11 +81,12 @@ int main(int argc, char *argv[])
 //Main collision loop starts
 	for (a=1; int(double(a)/double(C.TC.S.N))<C.TC.S.nsweep; a++)
 	{
+		cout<<"Entered loop"<<endl;
 		//The system has a thermostat applied
 		if(C.TC.S.andersen_freq != 0)
 		{
 			//Apply the thermostat in this step
-			if(a%C.TC.S.andersen_freq==0 && int(double(a)/double(C.TC.S.N))<C.TC.S.burn_percent*C.TC.S.nsweep)
+			if(a%C.TC.S.andersen_freq==0 && int(double(a)/double(C.TC.S.N))>=C.TC.S.burn_percent*C.TC.S.nsweep)
 			{
 				//Thermostat, returns the particle on which it is applied
 				thermostat_particle = C.AndersenThermostat();
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
 				cout<<"Overlap of particles inside the simulation run, so ending simulation at run number ="<<a<<"and TIME= "<<C.TC.S.TIME<<endl;
 				goto exit;
 			}
+
 		//Rewriting fpupdate_TIME to the last time when system was updated
 			C.TC.S.fpupdate_TIME=C.TC.S.TIME;
 			fpupdate_counter=fpupdate_counter+1;
@@ -179,6 +181,7 @@ int main(int argc, char *argv[])
 			rdf.RDF_r(C.TC.S.L, C.TC.S.N, C.TC.S.P, C.TC.S.maxbin);
 		}
 		//If only cell list, use cell list functions
+
 		if(C.TC.S.celllist_counter && (!C.TC.S.neighborlist_counter))
 		{
 			if(C.didcellchange)
@@ -309,13 +312,15 @@ int main(int argc, char *argv[])
 			C.TC.minimum_time = tmin;
 			C.TC.collider = col_counter;
 		}
+
 		if(C.TC.collider == C.TC.S.N)
 		{
 			cout<<"Crashing due to wrong assigment of the particle being moved"<<endl;
 			exit(1);
 		}
+
 		//Data printed at every update frequency
-		if(a%(C.TC.S.print_freq*C.TC.S.fpupdate_freq) == 0)
+		if(a%int(C.TC.S.print_freq*C.TC.S.fpupdate_freq) == 0)
 		{
 		//Calculation of KE, PE, TE, momentum
 			kineticenergy = C.TC.S.ke(C.TC.S.P, C.TC.S.N);

@@ -550,15 +550,18 @@ void System::velocity_initialization()
 	std::random_device rd{};					
 //   	std::mt19937 gen{rd()};
 	std::mt19937 gen{0};
-	std::normal_distribution<> d1{0,1};				//0 is mean, 1 is SD
-	std::normal_distribution<> d2{0,1};
-	std::normal_distribution<> d3{0,1};
+//	std::normal_distribution<> d1{0,1};				//0 is mean, 1 is SD
+//	std::normal_distribution<> d2{0,1};
+//	std::normal_distribution<> d3{0,1};
+	std::uniform_real_distribution<> d1{0,1};
+	std::uniform_real_distribution<> d2{0,1};
+	std::uniform_real_distribution<> d3{0,1};
 	
 	for (int i = 0; i<N; i++)
 	{
-		P[i].velocity.vx = d1(gen)*sqrt(temperature/P[i].mass);	
-		P[i].velocity.vy = d2(gen)*sqrt(temperature/P[i].mass);
-		P[i].velocity.vz = d3(gen)*sqrt(temperature/P[i].mass);
+		P[i].velocity.vx = (d1(gen)-0.5)*sqrt(temperature/P[i].mass);
+		P[i].velocity.vy = (d2(gen)-0.5)*sqrt(temperature/P[i].mass);
+		P[i].velocity.vz = (d3(gen)-0.5)*sqrt(temperature/P[i].mass);
 //		cout<<"P[i].velocity.vx = "<<P[i].velocity.vx<<"\t P[i].velocity.vy = "<<P[i].velocity.vy<<"\t P[i].velocity.vz = "<<P[i].velocity.vz<<endl;
 		momentum_counter=P[i].velocity*P[i].mass;
 		avg_center_of_mass_momentum = avg_center_of_mass_momentum + momentum_counter;
@@ -574,7 +577,7 @@ void System::velocity_initialization()
 //	{
 		//Making com velocity zero and scaling to give required thermal velocities
 //		momentum_counter=avg_center_of_mass_momentum*P[i].mass;
-//		P[i].velocity = (P[i].velocity-momentum_counter)*sqrt(temperature/P[i].mass);	
+//		P[i].velocity = (P[i].velocity-momentum_counter);//*sqrt(temperature/P[i].mass);	
 //		cout<<"P[i].velocity.vx = "<<P[i].velocity.vx<<"\t P[i].velocity.vy = "<<P[i].velocity.vy<<"\t P[i].velocity.vz = "<<P[i].velocity.vz<<endl;
 //		P[i].velocity2 = P[i].velocity.norm2();
 //		avg_com_mv2 = avg_com_mv2 + P[i].velocity2*P[i].mass;
