@@ -36,6 +36,25 @@ void System::min_img(XYZ &r, double L)
 	r.y = r.y - L*round(r.y/L);
 	r.z = r.z - L*round(r.z/L);
 }
+
+double System::RandomGaussianNumber()
+{
+	std::random_device rd{};					
+   	std::mt19937 gen{rd()};
+//	std::mt19937 gen{0};
+
+	std::uniform_real_distribution<> d{-1,1};
+	double ran1,ran2,ransq;
+
+	do
+	{
+		ran1=d(gen);
+		ran2=d(gen);
+		ransq=ran1*ran1+ran2*ran2;
+	}
+	while((ransq>1.0)||(ransq<0.0));
+	return ran1*sqrt(-2.0*log(ransq)/ransq);
+}
 //To make sure that the particles do not overlap at any time
 bool System::CheckOverlap(vector<Particle> &P)
 {
@@ -547,48 +566,62 @@ void System::velocity_initialization()
 	double max_particle_vel = 0.0;
 	cout<<"N = "<<N<<endl;
 //For maxwell boltzmann distribution of molecules
-	std::random_device rd{};					
+//	std::random_device rd{};					
 //   	std::mt19937 gen{rd()};
-	std::mt19937 gen{0};
+
+//	std::mt19937 gen{0};
 //	std::normal_distribution<> d1{0,1};				//0 is mean, 1 is SD
 //	std::normal_distribution<> d2{0,1};
 //	std::normal_distribution<> d3{0,1};
-	std::uniform_real_distribution<> d1{0,1};
-	std::uniform_real_distribution<> d2{0,1};
-	std::uniform_real_distribution<> d3{0,1};
+//	std::uniform_real_distribution<> d1{-1,1};
+//	std::uniform_real_distribution<> d2{-1,1};
+//	std::uniform_real_distribution<> d3{-1,1};
 	
 	for (int i = 0; i<N; i++)
 	{
-		P[i].velocity.vx = (d1(gen)-0.5)*sqrt(temperature/P[i].mass);
-		P[i].velocity.vy = (d2(gen)-0.5)*sqrt(temperature/P[i].mass);
-		P[i].velocity.vz = (d3(gen)-0.5)*sqrt(temperature/P[i].mass);
+		P[i].velocity.vx = RandomGaussianNumber();
+		P[i].velocity.vy = RandomGaussianNumber();
+		P[i].velocity.vz = RandomGaussianNumber();
+	
+//	for (int i = 0; i<N; i++)
+//	{
+//		P[i].velocity.vx = (d1(gen)-0.5)*sqrt(temperature/P[i].mass);
+//		P[i].velocity.vy = (d2(gen)-0.5)*sqrt(temperature/P[i].mass);
+//		P[i].velocity.vz = (d3(gen)-0.5)*sqrt(temperature/P[i].mass);
 //		cout<<"P[i].velocity.vx = "<<P[i].velocity.vx<<"\t P[i].velocity.vy = "<<P[i].velocity.vy<<"\t P[i].velocity.vz = "<<P[i].velocity.vz<<endl;
+    
 		momentum_counter=P[i].velocity*P[i].mass;
 		avg_center_of_mass_momentum = avg_center_of_mass_momentum + momentum_counter;
 		avg_com_mv2 = avg_com_mv2 + P[i].velocity.norm2()*P[i].mass;
 		net_mass = net_mass + P[i].mass;
 		P[i].velocity2 = P[i].velocity.norm2();
 	}
-
+//This makes it average velocity
 	avg_center_of_mass_momentum = avg_center_of_mass_momentum/net_mass;
 	avg_com_mv2 = avg_com_mv2/net_mass;
 	cout<<"COM_vx = "<<avg_center_of_mass_momentum.vx<<"\tCOM_vy = "<<avg_center_of_mass_momentum.vy<<"\tCOM_vz = "<<avg_center_of_mass_momentum.vz<<"\tCOM_v2 = "<<avg_com_mv2<<endl;
-//	for(int i=0; i<N; i++)
-//	{
+	for(int i=0; i<N; i++)
+	{
 		//Making com velocity zero and scaling to give required thermal velocities
-//		momentum_counter=avg_center_of_mass_momentum*P[i].mass;
+		momentum_counter=avg_center_of_mass_momentum*P[i].mass;
+
+		P[i].velocity = (P[i].velocity-avg_center_of_mass_momentum)*sqrt(temperature/P[i].mass);	
+		cout<<"P[i].velocity.vx = "<<P[i].velocity.vx<<"\t P[i].velocity.vy = "<<P[i].velocity.vy<<"\t P[i].velocity.vz = "<<P[i].velocity.vz<<endl;
+		P[i].velocity2 = P[i].velocity.norm2();
+		avg_com_mv2 = avg_com_mv2 + P[i].velocity2*P[i].mass;
 //		P[i].velocity = (P[i].velocity-momentum_counter);//*sqrt(temperature/P[i].mass);	
 //		cout<<"P[i].velocity.vx = "<<P[i].velocity.vx<<"\t P[i].velocity.vy = "<<P[i].velocity.vy<<"\t P[i].velocity.vz = "<<P[i].velocity.vz<<endl;
 //		P[i].velocity2 = P[i].velocity.norm2();
 //		avg_com_mv2 = avg_com_mv2 + P[i].velocity2*P[i].mass;
-		//New momentum after updating particle velocity
-//		momentum_counter=P[i].velocity*P[i].mass;
-//		avg_com_momentum_new = avg_com_momentum_new + momentum_counter; 
-//	}
 
-//	avg_com_momentum_new = avg_com_momentum_new/net_mass;
-//	avg_com_mv2 = avg_com_mv2/net_mass;
-//	cout<<"COM_vx = "<<avg_com_momentum_new.vx<<"\tCOM_vy = "<<avg_com_momentum_new.vy<<"\tCOM_vz = "<<avg_com_momentum_new.vz<<"\tCOM_v2 = "<<avg_com_mv2<<endl;
+//New momentum after updating particle velocity
+		momentum_counter=P[i].velocity*P[i].mass;
+		avg_com_momentum_new = avg_com_momentum_new + momentum_counter; 
+	}
+
+	avg_com_momentum_new = avg_com_momentum_new/net_mass;
+	avg_com_mv2 = avg_com_mv2/net_mass;
+	cout<<"COM_vx = "<<avg_com_momentum_new.vx<<"\tCOM_vy = "<<avg_com_momentum_new.vy<<"\tCOM_vz = "<<avg_com_momentum_new.vz<<"\tCOM_v2 = "<<avg_com_mv2<<endl;
 	//Defining maxvel for neighborlist calculation
 	for(int i = 0; i<N; i++)
 	{

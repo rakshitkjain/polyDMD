@@ -87,7 +87,9 @@ class System
 //3-D PBC
 	void PBC(double&, double&, double&);					
 //Minimum image convention
-	void min_img(XYZ&, double);						
+	void min_img(XYZ&, double);		
+//Generate a gaussian number for a gaussian velocity profile because the inbuilt normal dist. not working well
+	double RandomGaussianNumber();				
 //send the square of the distance beyond which it counts as an overlap, Checking particle overlaps
 	bool CheckOverlap(vector<Particle>&); 					
 //Checking initialising chain overlap
