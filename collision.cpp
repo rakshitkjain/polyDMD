@@ -42,8 +42,8 @@ double Collision::recalc_b(Particle &a, double L, int col_type, double r_inner2,
 int Collision::AndersenThermostat()
 {
 	int n;
-	double vx, vy, vz, v2 = 0;
-	VEL thermostat_vel, com_vel, deltav;
+	double vx, vy, vz, v2 = 0, net_mass=0.0;
+	VEL thermostat_vel, com_vel, deltav, momentum_counter;
 	Particle n_old, n_new;
 	XYZ deltax;
 //Will be used to obtain a seed for the random number engine
@@ -67,53 +67,59 @@ int Collision::AndersenThermostat()
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
 	n_old=TC.S.P[n];
 //Will be used to obtain a seed for the random number engine
-	std::random_device rd1;  									
+//	std::random_device rd1;  									
 //  	std::mt19937 gen1{rd1()};
-	std::mt19937 gen1{0};
+//	std::mt19937 gen1{0};
 //For getting a gaussian velocity profile
-	std::normal_distribution<> d1{0,1};
-	std::normal_distribution<> d2{0,1};								
-	std::normal_distribution<> d3{0,1};	
+//	std::normal_distribution<> d1{0,1};
+//	std::normal_distribution<> d2{0,1};								
+//	std::normal_distribution<> d3{0,1};	
+//	std::uniform_real_distribution<> d1{-1,1};
+//	std::uniform_real_distribution<> d2{-1,1};
+//	std::uniform_real_distribution<> d3{-1,1};
+
 //Reinitialized non-normalized velocity
-	thermostat_vel.vx = d1(gen1)*sqrt(TC.S.temperature/TC.S.P[n].mass);
-	thermostat_vel.vy = d2(gen1)*sqrt(TC.S.temperature/TC.S.P[n].mass);
-	thermostat_vel.vz = d3(gen1)*sqrt(TC.S.temperature/TC.S.P[n].mass);
+	thermostat_vel.vx = TC.S.RandomGaussianNumber();//*sqrt(3*TC.S.temperature/TC.S.P[n].mass);
+	thermostat_vel.vy = TC.S.RandomGaussianNumber();//sqrt(3*TC.S.temperature/TC.S.P[n].mass);
+	thermostat_vel.vz = TC.S.RandomGaussianNumber();//sqrt(3*TC.S.temperature/TC.S.P[n].mass);
 
 	for (int i = 0; i<TC.S.N; i++)
 	{
 		if(i == n)
-			{com_vel = com_vel + thermostat_vel; }
+			{momentum_counter = thermostat_vel*TC.S.P[i].mass; }
 		else
-			{com_vel = com_vel + TC.S.P[i].velocity;}
+			{momentum_counter = TC.S.P[i].velocity*TC.S.P[i].mass;}
+		com_vel=com_vel+momentum_counter;
+		net_mass=net_mass+TC.S.P[i].mass;
 	}
-	com_vel = com_vel/TC.S.N;
+	com_vel = com_vel/net_mass;
 	cout<<"Using thermostat, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
 
- 	TC.S.P[n].velocity = thermostat_vel;
+	TC.S.P[n].velocity = thermostat_vel;
+	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
 //	for (int i = 0; i<TC.S.N; i++)
 //	{
-//		if(i == n)
-//			{ TC.S.P[i].velocity = thermostat_vel - com_vel;}
-//		else
-//			{TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;}
+//		TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;
+//		TC.S.P[i].velocity2 = TC.S.P[i].velocity.norm2();
 //	}
-	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
+//	cout<<"Using thermostat reformed velocity, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
+
+//	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
 //Reinitialized the velocity, updating to make sure it is the true position.
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
-	n_new=TC.S.P[n];
-	n_new.coordinate=TC.S.OneParticlePositionUpdater(n_new,TC.S.TIME,TC.S.fpupdate_TIME);
-	deltax= n_new.coordinate-n_old.coordinate;
-	deltav.vx=deltax.x/(TC.S.TIME-TC.S.fpupdate_TIME);
-	deltav.vy=deltax.y/(TC.S.TIME-TC.S.fpupdate_TIME);
-	deltav.vz=deltax.z/(TC.S.TIME-TC.S.fpupdate_TIME);
-	TC.S.P[n].velocity=TC.S.P[n].velocity+deltav;
-	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
+//	n_new=TC.S.P[n];
+//	n_new.coordinate=TC.S.OneParticlePositionUpdater(n_new,TC.S.TIME,TC.S.fpupdate_TIME);
+//	deltax= n_new.coordinate-n_old.coordinate;
+//	deltav.vx=deltax.x/(TC.S.TIME-TC.S.fpupdate_TIME);
+//	deltav.vy=deltax.y/(TC.S.TIME-TC.S.fpupdate_TIME);
+//	deltav.vz=deltax.z/(TC.S.TIME-TC.S.fpupdate_TIME);
+//	TC.S.P[n].velocity=TC.S.P[n].velocity+deltav;
+//	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
 
-	cout<<"Thermostat particle= "<<n<<"\t deltax_x= "<<deltax.x<<"\t deltax_y= "<<deltax.y<<"\t deltax_z="<<deltax.z<<endl;
-	cout<<"deltav.vx= "<<deltav.vx<<"\t deltav.vy= "<<deltav.vy<<"\t deltav.vz= "<<deltav.vz<<endl;
+//	cout<<"Thermostat particle= "<<n<<"\t deltax_x= "<<deltax.x<<"\t deltax_y= "<<deltax.y<<"\t deltax_z="<<deltax.z<<endl;
+//	cout<<"deltav.vx= "<<deltav.vx<<"\t deltav.vy= "<<deltav.vy<<"\t deltav.vz= "<<deltav.vz<<endl;
 
 //Moving the particle back in time but with the new velocity
-
 	return n;
 }
 
