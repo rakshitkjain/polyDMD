@@ -42,13 +42,10 @@ double Collision::recalc_b(Particle &a, double L, int col_type, double r_inner2,
 int Collision::AndersenThermostat()
 {
 	int n;
-<<<<<<< HEAD
+
 	double vx, vy, vz, v2 = 0, net_mass=0.0;
 	VEL thermostat_vel, com_vel, deltav, momentum_counter;
-=======
-	double vx, vy, vz, v2 = 0;
-	VEL thermostat_vel, com_vel, deltav;
->>>>>>> fc2a66195ac46e4918f4915adc517f2f86daafc3
+
 	Particle n_old, n_new;
 	XYZ deltax;
 //Will be used to obtain a seed for the random number engine
@@ -97,7 +94,7 @@ int Collision::AndersenThermostat()
 		com_vel=com_vel+momentum_counter;
 		net_mass=net_mass+TC.S.P[i].mass;
 	}
-<<<<<<< HEAD
+
 	com_vel = com_vel/net_mass;
 	cout<<"Using thermostat, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
 
@@ -121,36 +118,6 @@ int Collision::AndersenThermostat()
 //	deltav.vz=deltax.z/(TC.S.TIME-TC.S.fpupdate_TIME);
 //	TC.S.P[n].velocity=TC.S.P[n].velocity+deltav;
 //	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
-=======
-	com_vel = com_vel/TC.S.N;
-	cout<<"Using thermostat, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
-
- 	TC.S.P[n].velocity = thermostat_vel;
-//	for (int i = 0; i<TC.S.N; i++)
-//	{
-//		if(i == n)
-//			{ TC.S.P[i].velocity = thermostat_vel - com_vel;}
-//		else
-//			{TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;}
-//	}
-	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
-//Reinitialized the velocity, updating to make sure it is the true position.
-	TC.S.P[n].coordinate=TC.S.OneParticlePositionBackwarder(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
-	n_new=TC.S.P[n];
-	n_new.coordinate=TC.S.OneParticlePositionUpdater(n_new,TC.S.TIME,TC.S.fpupdate_TIME);
-	deltax= n_new.coordinate-n_old.coordinate;
-	deltav.vx=deltax.x/(TC.S.TIME-TC.S.fpupdate_TIME);
-	deltav.vy=deltax.y/(TC.S.TIME-TC.S.fpupdate_TIME);
-	deltav.vz=deltax.z/(TC.S.TIME-TC.S.fpupdate_TIME);
-	TC.S.P[n].velocity=TC.S.P[n].velocity+deltav;
-	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
-
-	cout<<"Thermostat particle= "<<n<<"\t deltax_x= "<<deltax.x<<"\t deltax_y= "<<deltax.y<<"\t deltax_z="<<deltax.z<<endl;
-	cout<<"deltav.vx= "<<deltav.vx<<"\t deltav.vy= "<<deltav.vy<<"\t deltav.vz= "<<deltav.vz<<endl;
-
-//Moving the particle back in time but with the new velocity
->>>>>>> fc2a66195ac46e4918f4915adc517f2f86daafc3
-
 //	cout<<"Thermostat particle= "<<n<<"\t deltax_x= "<<deltax.x<<"\t deltax_y= "<<deltax.y<<"\t deltax_z="<<deltax.z<<endl;
 //	cout<<"deltav.vx= "<<deltav.vx<<"\t deltav.vy= "<<deltav.vy<<"\t deltav.vz= "<<deltav.vz<<endl;
 
