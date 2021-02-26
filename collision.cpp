@@ -69,21 +69,21 @@ int Collision::AndersenThermostat()
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
 	n_old=TC.S.P[n];
 //Will be used to obtain a seed for the random number engine
-//	std::random_device rd1;  									
+//	std::random_device rd1;
 //  	std::mt19937 gen1{rd1()};
 //	std::mt19937 gen1{0};
 //For getting a gaussian velocity profile
 //	std::normal_distribution<> d1{0,1};
-//	std::normal_distribution<> d2{0,1};								
+//	std::normal_distribution<> d2{0,1};
 //	std::normal_distribution<> d3{0,1};	
 //	std::uniform_real_distribution<> d1{-1,1};
 //	std::uniform_real_distribution<> d2{-1,1};
 //	std::uniform_real_distribution<> d3{-1,1};
 
 //Reinitialized non-normalized velocity
-	thermostat_vel.vx = TC.S.RandomGaussianNumber();//*sqrt(3*TC.S.temperature/TC.S.P[n].mass);
-	thermostat_vel.vy = TC.S.RandomGaussianNumber();//sqrt(3*TC.S.temperature/TC.S.P[n].mass);
-	thermostat_vel.vz = TC.S.RandomGaussianNumber();//sqrt(3*TC.S.temperature/TC.S.P[n].mass);
+	thermostat_vel.vx = TC.S.RandomGaussianNumber()*sqrt(TC.S.temperature/TC.S.P[n].mass);
+	thermostat_vel.vy = TC.S.RandomGaussianNumber()*sqrt(TC.S.temperature/TC.S.P[n].mass);
+	thermostat_vel.vz = TC.S.RandomGaussianNumber()*sqrt(TC.S.temperature/TC.S.P[n].mass);
 
 	for (int i = 0; i<TC.S.N; i++)
 	{
