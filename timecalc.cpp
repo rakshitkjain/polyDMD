@@ -278,7 +278,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 			cout<<S.P[j].coordinate.z<<"\tP2vx="<<S.P[j].velocity.vx<<"\tP2vy=";
 			cout<<S.P[j].velocity.vy<<"\tP2vz="<<S.P[j].velocity.vz<<endl;
 			cout<<"TIME="<<S.TIME<<"\tfp_TIME="<<S.fpupdate_TIME<<endl;
-			exit(1);
+//			exit(1);
 		}
 	}
 	

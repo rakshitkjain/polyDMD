@@ -88,7 +88,7 @@ int Collision::AndersenThermostat()
 	for (int i = 0; i<TC.S.N; i++)
 	{
 		if(i == n)
-			{momentum_counter = thermostat_vel*TC.S.P[i].mass; }
+			{momentum_counter = thermostat_vel*TC.S.P[i].mass;}
 		else
 			{momentum_counter = TC.S.P[i].velocity*TC.S.P[i].mass;}
 		com_vel=com_vel+momentum_counter;
