@@ -295,7 +295,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 					t = (-b - sqrt(D2))/counter.velocity2;
 				}
 				if(b>0)
-				{
+				{ 
 					if(r_outer == S.L)
 					{
 						col_type = 0;
