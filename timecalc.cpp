@@ -18,6 +18,7 @@ void TimeCalc::timearray_initialization(int N)
 	}
 }
 //Time until collision to select from a vector of L's and epsilons
+//Mainly applicable to nonbonded particles
 void TimeCalc::CollisionTime_ij(int i, int j, int event_type, vector<double> r_inner, vector<double> r_outer, vector<double> epsilon)
 {
 	double r;
@@ -42,12 +43,16 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, vector<double> r_i
 		if(r < r_outer[k] && r > r_inner[k])// Particle is in that well
 		{
 			list_updated = true;
+//This means there is only one well, and the particles are in it
 			if(k == 0 && r_inner.size()==1)	
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], 1.0e08, 0);}
+//MOre than one wells, but in the first well after HS
 			else if(k==0 && r_inner.size() > 1)
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], 1.0e08, epsilon[k+1]);}
+//More than one well, in the last well
 			else if(k!=0 && k==r_inner.size()-1)
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], epsilon[k-1], 0);}
+//More than one well, not in the first or last one
 			else
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], epsilon[k-1], epsilon[k+1]);}
 			break;
@@ -127,11 +132,10 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 					t = (-b + sqrt(D1))/counter.velocity2;
 				}
 				col_type = 1;
-//				col_type = 1;
 //Only bounce on left side possible //The left side has a hard wall
 				if(epsilon_inner == 1.0e08)
 					{col_type=1;}
-//Particle is in a sq well right now, no hard wall on left side
+//Particle is in a sq well right now, no hard wall on left side/Multiple wells
 				else if(potential_inner > 0.0)
 				{
 //Energy enough to get out of the well, or collision with outer wall in case of bond event
@@ -144,7 +148,8 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 				else if(potential_inner < 0.0)			
 					{col_type=2;}				//Transfer on left side
 			}
-//Cores will not collide, attractive collision will occur, D1<0//no concept of attractive collision for bonded particles
+//Cores will not collide, attractive collision will occur, D1<0
+//no concept of attractive collision for bonded particles
 			else 							
 			{
 				t = (-b + sqrt(D2))/counter.velocity2;
@@ -278,7 +283,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 			cout<<S.P[j].coordinate.z<<"\tP2vx="<<S.P[j].velocity.vx<<"\tP2vy=";
 			cout<<S.P[j].velocity.vy<<"\tP2vz="<<S.P[j].velocity.vz<<endl;
 			cout<<"TIME="<<S.TIME<<"\tfp_TIME="<<S.fpupdate_TIME<<endl;
-//			exit(1);
+			exit(1);
 		}
 	}
 	

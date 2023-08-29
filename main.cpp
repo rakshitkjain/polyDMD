@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 		//The system has a thermostat applied
 		if(C.TC.S.andersen_freq != 0)
 		{
-			//Apply the thermostat in this step
+			//Apply the thermostat in this step, skip burn percent
 			if(a%C.TC.S.andersen_freq==0 && int(double(a)/double(C.TC.S.N))>=C.TC.S.burn_percent*C.TC.S.nsweep)
 			{
 				//Thermostat, returns the particle on which it is applied
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 					}	
 					C.TC.UpdateDownCellList(thermostat_particle, C.TC.S.N);
 				}
-				//Using both celllist and neighborlist, but just updating neighborlist
+				//Using both celllist and neighborlist, but just updating neighborlist, edit made to update all uplist after thermostat
 				else if(C.TC.S.celllist_counter && C.TC.S.neighborlist_counter)
 				{
 					//Updating timelist after collision

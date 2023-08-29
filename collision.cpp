@@ -43,7 +43,7 @@ int Collision::AndersenThermostat()
 {
 	int n;
 
-	double vx, vy, vz, v2 = 0, net_mass=0.0;
+	double vx, vy, vz, v2 = 0, net_mass=0.0, mass_ratio=0.0;
 	VEL thermostat_vel, com_vel, deltav, momentum_counter, after_com_vel;
 
 	Particle n_old, n_new;
@@ -56,6 +56,7 @@ int Collision::AndersenThermostat()
 //For selecting particle number
 	std::uniform_real_distribution<> par(0.0, 1.0);							
 	n = int(double(TC.S.N)*par(gen));
+//Done to make sure we don't keep on picking the same particle pair for thermostat
 	if (n == TC.collider || n == TC.col_partner)
 	{
 		n = int(double(TC.S.N)*par(gen));
@@ -67,6 +68,7 @@ int Collision::AndersenThermostat()
 //A possible error can be that you aren't reforming timelist after changing the particle velocities, for all the particles, but it might not be necessary as low velocity change
 //Moving the particle to the actual position
 	TC.S.P[n].coordinate=TC.S.OneParticlePositionUpdater(TC.S.P[n],TC.S.TIME,TC.S.fpupdate_TIME);
+//The old details of the thermostat particle
 	n_old=TC.S.P[n];
 //Will be used to obtain a seed for the random number engine
 //	std::random_device rd1;
@@ -84,7 +86,7 @@ int Collision::AndersenThermostat()
 	thermostat_vel.vx = TC.S.RandomGaussianNumber()*sqrt(TC.S.temperature/TC.S.P[n].mass);
 	thermostat_vel.vy = TC.S.RandomGaussianNumber()*sqrt(TC.S.temperature/TC.S.P[n].mass);
 	thermostat_vel.vz = TC.S.RandomGaussianNumber()*sqrt(TC.S.temperature/TC.S.P[n].mass);
-
+//Calculating COM properties
 	for (int i = 0; i<TC.S.N; i++)
 	{
 		if(i == n)
@@ -96,17 +98,23 @@ int Collision::AndersenThermostat()
 	}
 
 	com_vel = com_vel/net_mass;
-	cout<<"Before thermostat, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
+	cout<<"New COM vel, before normalization, COMv.vx="<<com_vel.vx<<"\t COMv.vy="<<com_vel.vy<<"\t COMv.vz="<<com_vel.vz<<endl;
 
+	mass_ratio = net_mass/TC.S.P[n].mass;
+	deltav = com_vel*mass_ratio;
 	TC.S.P[n].velocity = thermostat_vel;
+//Making COM velocity 0 by just editing the velocity of thermostat particle
+	TC.S.P[n].velocity = TC.S.P[n].velocity - deltav;
 	TC.S.P[n].velocity2 = TC.S.P[n].velocity.norm2();
+//Making COM_vel=0 after thermostat by editing velocities for everything
 	for (int i = 0; i<TC.S.N; i++)
 	{
-		TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;
-		TC.S.P[i].velocity2 = TC.S.P[i].velocity.norm2();
+//		TC.S.P[i].velocity = TC.S.P[i].velocity - com_vel;
+//		TC.S.P[i].velocity2 = TC.S.P[i].velocity.norm2();
 		momentum_counter=TC.S.P[i].velocity*TC.S.P[i].mass;
 		after_com_vel=after_com_vel+momentum_counter;
 	}
+	
 	after_com_vel=after_com_vel/net_mass;
 	cout<<"Using thermostat reformed velocity, COMv.vx="<<after_com_vel.vx<<"\t COMv.vy="<<after_com_vel.vy<<"\t COMv.vz="<<after_com_vel.vz<<endl;
 
