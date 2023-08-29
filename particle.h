@@ -1,4 +1,4 @@
-//MD: particle.h Particle Class (Revision Date: 4th Nov 2019)
+//MD: particle.h Particle Class (Revision Date: 29th August 2023)
 //Store the list of particles 
 #ifndef _PARTICLE_H
 #define _PARTICLE_H
@@ -8,7 +8,7 @@
 class Particle
 {
 public:
-	XYZ coordinate;				//coordinates
+	XYZ coordinate;					//coordinates
 	VEL velocity;					//velocity
 	double velocity2;				//net speed of the particle
 	int cell_ID;					//ID of cell list location
@@ -23,9 +23,10 @@ public:
 	std::string atomtype;				//Special name for the atom, useful when reading parameters fron .par file. Initialized when reading a psf
 	std::string symbol;				//Symbol of the element concerning the molecule
 	double mass;					//Mass of the particle
-	double diameter;				//Diamter of the particle
+	double diameter;				//Diameter of the particle
 	double charge;					//Charge on the particle (might be useful for Ewald Summation later)
 	double bcalc(){return (coordinate.x*velocity.vx + coordinate.y*velocity.vy + coordinate.z*velocity.vz) ;}
+	//Sample initializer
 	Particle(){coordinate.x=0.0; coordinate.y=0.0; coordinate.z=0.0; velocity.vx=0.0; velocity.vy=0.0; velocity.vz=0.0; velocity2=0.0; cell_ID=0; type="ATOM"; name="C1"; resname="CHI"; chaintype='A'; chainnumber=1; occupancy=0.0; tempfactor=0.0; moltype="CHI"; atomtype = "CG331"; symbol="C"; diameter = 1.0; mass = 1.0; charge = 0.0;}
 };
 #endif

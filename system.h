@@ -20,14 +20,10 @@ class System
 		int N, nsweep, maxbin;	 		
 //L= Box size
 		double L;				
-//temperature = absolute temperature of the system, mass = mass of each particle in amu
-		double temperature/*, mass*/;		
-//Potential Parameters "Square well" well_depth= energy parameter (depth = +ve, WILL NOT WORK FOR SHOULDER POTENTIALS!), sigma1 = particle diameter, sigma2 = square well diameter
-//		double well_depth, sigma1, sigma2;	
-//bondlength of the polymer chain, bond_delta = difference in bond length allowed
-		double /*bondlength, */bond_delta; 	
-//chainlength = Number of particles in chain, nchains = number of chains in simulation box
-//		int chainlength, nchains; 		
+//temperature = absolute temperature of the system
+		double temperature;		
+//bond_delta = difference in bond length allowed
+		double bond_delta; 	
 //One out of every andersen_freq collisions will be a ghost collision
 		int andersen_freq;			
 //Size of each cell for cell-list
@@ -54,13 +50,13 @@ class System
 //List of bonded particles (NEED TO INCLUDE PSEUDOBONDS AS WELL)
 		vector<BOND> bondlist;			
 		vector<NONBOND> nonbondlist;
+//Linklist, Headlist for Cell list speedup
 		vector<int> LinkList;
 		vector<int> HeadList;
+//Similarly, linklist, headlist for Neighborlist speedup
 		vector<int> NeighborLinkList;		
 //Contains the position of the last neighbor of particle i in the vector NeighborLinkList
 		vector<int> NeighborHeadList;		
-//square of square well diameter, needed for time calculations
-//		double sigma2sq;			
 //Potential energy of the system
 		double potential_energy = 0;		
 //This variable determines if we are using celllist or not, depending on the initial state of the system
@@ -70,47 +66,41 @@ class System
 		double neighborlist_range;		
 //Maximum number of cells allowed in the system
 		int ncell_max;				
-//Length of the sides of the box
-//		double a, b, c;				
-//Angles for the box
-//		double alpha, beta, gamma;		
 //time passed in the system, time of last false position update
 		double TIME, fpupdate_TIME;				
-//No. of chains per side of the lattice
-//		int Nchain_perside;			
 //Maximum of all the well depths in the system (Will be important when multiple potentials etc)
 		double max_well_width;			
 
 //Additional functions
 //Single coordinate pbc
-	void PBC_s(double&);							
+	void PBC_s(double&);
 //3-D PBC
-	void PBC(double&, double&, double&);					
+	void PBC(double&, double&, double&);
 //Minimum image convention
-	void min_img(XYZ&, double);		
+	void min_img(XYZ&, double);
 //Generate a gaussian number for a gaussian velocity profile because the inbuilt normal dist. not working well
-	double RandomGaussianNumber();				
+	double RandomGaussianNumber();
 //send the square of the distance beyond which it counts as an overlap, Checking particle overlaps
-	bool CheckOverlap(vector<Particle>&); 					
+	bool CheckOverlap(vector<Particle>&);
 //Checking initialising chain overlap
-	bool CheckOverlap_bead(int, vector<Particle>&);				
+	bool CheckOverlap_bead(int, vector<Particle>&);
 //Potential energy calculating function
-	double pe(vector<Particle>&, int);					
+	double pe(vector<Particle>&, int);
 //Kinetic Energy calculating function
-	double ke(vector<Particle>&, int);					
+	double ke(vector<Particle>&, int);
 //Net simulation box momentum
-	VEL net_momentum(vector<Particle>&, int);				
+	VEL net_momentum(vector<Particle>&, int);
 //Creating the initial system within the simulation
-	void Create();								
-//Initialising chain velocities			
-	void velocity_initialization();						
+	void Create();
+//Initialising velocities after reading input coords
+	void velocity_initialization();
 //Initialising chains at the start
-	void coordinate_initialization(double, int); 				
-//Cell list functions								
+	void coordinate_initialization(double, int);
+//Cell list functions
 	//Iniitialisation for headlist and linklist
-	void CellList_initialization();						
+	void CellList_initialization();
 	//Makes cellID, header and link-list arrays
-	void CellList();							
+	void CellList();
 //Neighbor list functions
 	void NeighborList_initialization();
 	void NeighborList();

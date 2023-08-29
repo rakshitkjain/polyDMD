@@ -1,4 +1,4 @@
-//MD: Nonbond Class to store and manipulate nonbonded atoms along with the potentials and ranges stored  (Revision Date: 4th January 2020)
+//MD: Nonbond Class to store and manipulate nonbonded atoms along with the potentials and ranges stored  (Revision Date: 29th August 2023)
 #ifndef _NONBOND_H
 #define _NONBOND_H
 #include "header.h"
@@ -12,6 +12,7 @@ class NONBOND
 		vector<double> epsilon;				
 		
 	 	NONBOND(std::string _partner1, std::string _partner2, vector<double> _L1, vector<double> _L2, vector<double> _epsilon){partner1=_partner1;        partner2=_partner2;   L1=_L1;	L2=_L2;	epsilon=_epsilon;}
+		//Sample empty class element
 		NONBOND(){partner1="CG331";      partner2="CG331";}
 };
 #endif
