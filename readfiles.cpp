@@ -563,9 +563,6 @@ void ReadFiles::ReadParameterFile(std::string FileName, vector<Particle> &P, vec
 				{
 //					cout<<line<<endl;
 					bondlist[i].bondlength = bondlen;
-//					cout<<"bondlen = "<<bondlen<<endl;
-//					cout<<"partner1="<<bondlist[i].partner1<<"\t partner2="<<bondlist[i].partner2<<"\t middle="<<bondlist[i].middle<<"\t bondlength ="<<bondlist[i].bondlength<<endl;
-//					cout<<"Particle 1 = "<<bondlist[i].partner1<<"\t atomtype = "<<P[bondlist[i].partner1].atomtype<<"Particle 2 = "<<bondlist[i].partner2<<"\t atomtype = "<<P[bondlist[i].partner2].atomtype<<endl;
 					counter_covalent = counter_covalent + 1;
 				}
 			}				
@@ -659,41 +656,35 @@ void ReadFiles::ReadParameterFile(std::string FileName, vector<Particle> &P, vec
 			{
 				if((nonbondlist[i].partner1 == dumper[0] && nonbondlist[i].partner2 == dumper[1]) || (nonbondlist[i].partner1 == dumper[1] && nonbondlist[i].partner2 == dumper[0]))
 				{
-				//So, here, the particle pair is in the parameter file and it is nonbonded pair, so read the data
-//					for(int l =0; l<nonbondlist.size(); l++)
-//					{//Making sure that this pair is not a case of multiple potentials
-//						if(nonbondlist[l].partner1 == i && nonbondlist[l].partner2 == j)
-//						{//If multiple potentials
-					nonbondlist[i].L1.push_back(L1);
-					nonbondlist[i].L2.push_back(L2);
-					nonbondlist[i].epsilon.push_back(epsilon);
-//							nonbond_found = true;
-//							break;
-//						}
-//						else
-//							{nonbond_found=false;}
-//					}
-//					if(nonbond_found == false)
-//					{
-//					cout<<"Bhar rahe hain particles"<<endl;
-//					cout<<"i = "<<nonbondlist[i].partner1<<"j = "<<nonbondlist[i].partner2<<endl;
-//					filler.partner1 = i;
-//					filler.partner2 = j;
-//					filler.L1.push_back(L1);
-//					filler.L2.push_back(L2);
-//					filler.epsilon.push_back(epsilon);
-//					nonbondlist.push_back(filler);
+//So, here, the particle pair is in the parameter file and it is nonbonded pair, so read the data
+//If multiple potentials and this is the first one
+//					cout<<line<<endl;
+					if(nonbondlist[i].L1.size() == 0)
+					{
+						nonbondlist[i].L1.push_back(L1);
+						nonbondlist[i].L2.push_back(L2);
+						nonbondlist[i].epsilon.push_back(epsilon);
+					}
+					else
+					{//This makes sure that the wells are continuous
+						if(nonbondlist[i].L2[nonbondlist[i].L2.size()]==L1)
+						{
+							nonbondlist[i].L1.push_back(L1);	
+							nonbondlist[i].L2.push_back(L2);
+							nonbondlist[i].epsilon.push_back(epsilon);
+						}//Do nothing if repetition 
+						else if(nonbondlist[i].L2[nonbondlist[i].L2.size()]==L2 && nonbondlist[i].L1[nonbondlist[i].L1.size()]==L1 && nonbondlist[i].epsilon[nonbondlist[i].epsilon.size()]==epsilon)
+						{/*cout<<"entering here as well"<<endl;*/}
+						else//Something weird is happening then
+						{
+							cout<<"Weird stuff reading from the parameter file"<<endl;
+							exit(1);
+						}
+					}
 				}
 			}
 			std::getline(in,line);
-//			cout<<line<<endl;
 		}
-//		cout<<"END mil gaya, niklo bc"<<endl;
-//		else
-//		{
-//			cout<<"Stuff gon wrong when reading the parameter file nonbond section"<<endl;
-//			exit(1);
-//		}	
 		//MAKING SURE ALL THE NONBONDS ARE FILLED AND OF THE SAME SIZE
 		j = 0;
 		while(j< nonbondlist.size())
@@ -707,5 +698,4 @@ void ReadFiles::ReadParameterFile(std::string FileName, vector<Particle> &P, vec
 				{j = j+1;}
 		}
 	in.close();
-//	cout<<"Exited file reading"<<endl;
 }	

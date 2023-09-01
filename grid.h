@@ -1,4 +1,4 @@
-//KMC: grid.h Grid Class (Revision Date: 6th Jan 2019)
+//DMD: grid.h Grid Class (Revision Date: 29th August 2023)
 #ifndef _GRID_H
 #define _GRID_H
 #include "header.h"

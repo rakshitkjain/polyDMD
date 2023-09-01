@@ -1,4 +1,4 @@
-//Here we define the Coll class function declarations, function definitions are in collision.cpp
+//Here we define the Collision class function declarations, function definitions are in collision.cpp
 //This construct ensures you do not re-define headers
 #ifndef _COLLISION_H
 #define _COLLISION_H
@@ -24,7 +24,7 @@ class Collision
 	void Bump(double, int);									
 //Thermostat function, returning the particle on which applying andersen
 	int AndersenThermostat();		
-//Function to update particle position when using false position
+//Function to update all particle position when using false position
 	void AllParticlePositionUpdater(int, vector<Particle>&, double, double);
 };
 #endif

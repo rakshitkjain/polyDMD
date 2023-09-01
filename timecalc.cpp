@@ -18,6 +18,7 @@ void TimeCalc::timearray_initialization(int N)
 	}
 }
 //Time until collision to select from a vector of L's and epsilons
+//Mainly applicable to nonbonded particles
 void TimeCalc::CollisionTime_ij(int i, int j, int event_type, vector<double> r_inner, vector<double> r_outer, vector<double> epsilon)
 {
 	double r;
@@ -42,12 +43,16 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, vector<double> r_i
 		if(r < r_outer[k] && r > r_inner[k])// Particle is in that well
 		{
 			list_updated = true;
+//This means there is only one well, and the particles are in it
 			if(k == 0 && r_inner.size()==1)	
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], 1.0e08, 0);}
+//MOre than one wells, but in the first well after HS
 			else if(k==0 && r_inner.size() > 1)
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], 1.0e08, epsilon[k+1]);}
+//More than one well, in the last well
 			else if(k!=0 && k==r_inner.size()-1)
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], epsilon[k-1], 0);}
+//More than one well, not in the first or last one
 			else
 				{CollisionTime_ij(i, j, 2, r_inner[k], r_outer[k], epsilon[k], epsilon[k-1], epsilon[k+1]);}
 			break;
@@ -105,6 +110,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 		potential_inner = 1.0e08;							
 		potential_outer = 1.0e08;
 	}
+//	cout<<"Coltype eval for i="<<i<<"\t j="<<j<<"\t event_type="<<event_type<<"\t  r_inner="<<r_inner<<"\t r_outer="<<r_outer<<"\t epsilon_now"<<epsilon_now<<"\t epsilon_inner"<<epsilon_inner<<"\t epsilon_outer="<<epsilon_outer<<endl;
 //Checking if inside square well or bond well, depending on the type of collision
 	c1 = r2 - r_inner2;
 	c2 = r2 - r_outer2;
@@ -116,7 +122,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 	{
 //particles inside square well (BY THE CURRENT FORMULATION, THIS IS ALWAYS TRUE, BUT STILL KEEP FOR SOME TIME)
 //Taking the small value because it is the margin of error
-		if(c2/r_outer2 <= 1.0e-5 && r_outer != S.L)						
+		if(c2/r_outer2 <= 1.0e-4 && r_outer != S.L)						
 		{
 			if(D1 > 0)						//Cores Collision
 			{
@@ -126,11 +132,10 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 					t = (-b + sqrt(D1))/counter.velocity2;
 				}
 				col_type = 1;
-//				col_type = 1;
 //Only bounce on left side possible //The left side has a hard wall
 				if(epsilon_inner == 1.0e08)
 					{col_type=1;}
-//Particle is in a sq well right now, no hard wall on left side
+//Particle is in a sq well right now, no hard wall on left side/Multiple wells
 				else if(potential_inner > 0.0)
 				{
 //Energy enough to get out of the well, or collision with outer wall in case of bond event
@@ -143,7 +148,8 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 				else if(potential_inner < 0.0)			
 					{col_type=2;}				//Transfer on left side
 			}
-//Cores will not collide, attractive collision will occur, D1<0//no concept of attractive collision for bonded particles
+//Cores will not collide, attractive collision will occur, D1<0
+//no concept of attractive collision for bonded particles
 			else 							
 			{
 				t = (-b + sqrt(D2))/counter.velocity2;
@@ -169,7 +175,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 			}
 		}
 //This means that the particles are outside square well, only possible collisions are 1, 2, 0 (which is 4 for no boundaries)
-		else if(c2/r_outer2 <= 1.0e-5 && r_outer == S.L)	
+		else if(c2/r_outer2 <= 1.0e-4 && r_outer == S.L)	
 		{
 			if(D1 > 0)						//Cores Collision
 			{
@@ -235,7 +241,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 //Centers going away from each other, b>0
 	else									
 	{
-		if(c2/r_outer2 <= 1.0e-5 && r_outer != S.L)				//Inside square well
+		if(c2/r_outer2 <= 1.0e-4 && r_outer != S.L)				//Inside square well
 		{
 			t = (-b + sqrt(D2))/counter.velocity2;
 			col_type = 3;
@@ -257,7 +263,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 				{col_type=4;}				//Transfer on right side
 		}
 //Centers are going away and it is outside the square well, so can only have collision type 0
-		else if(c2/r_outer2 <= 1.0e-5 && r_outer == S.L)
+		else if(c2/r_outer2 <= 1.0e-4 && r_outer == S.L)
 		{
 			t=timbig;
 			col_type=0;
@@ -294,7 +300,7 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 					t = (-b - sqrt(D2))/counter.velocity2;
 				}
 				if(b>0)
-				{
+				{ 
 					if(r_outer == S.L)
 					{
 						col_type = 0;
@@ -366,16 +372,16 @@ void TimeCalc::CollisionTime_ij(int i, int j, int event_type, double r_inner, do
 	}*/
 	if(t < TimeList[i] && t > 1.0e-11)
 	{
-		cout<<"i="<<i<<"\t j="<<j<<"\t t="<<t<<"\t r2="<<r2<<"\t c2="<<c2;
-		cout<<"\tevent_type="<<event_type<<"\tcol_type"<<col_type<<endl;
-		cout<<"\t P1x="<<S.P[i].coordinate.x<<"\t P1y="<<S.P[i].coordinate.y;
-		cout<<"\t P1z="<<S.P[i].coordinate.z<<endl;
-		cout<<"\t P2x="<<S.P[j].coordinate.x<<"\t P2y="<<S.P[j].coordinate.y;
-		cout<<"\t P2z="<<S.P[j].coordinate.z<<endl;
-		cout<<"\t P1vx="<<S.P[i].velocity.vx<<"\t P1vy="<<S.P[i].velocity.vy;
-		cout<<"\t P1vz="<<S.P[i].velocity.vz<<endl;
-		cout<<"\t P2vx="<<S.P[j].velocity.vx<<"\t P2vy="<<S.P[j].velocity.vy;
-		cout<<"\t P2vz="<<S.P[j].velocity.vz<<endl;
+//		cout<<"i="<<i<<"\t j="<<j<<"\t t="<<t<<"\t r2="<<r2<<"\t c2="<<c2;
+//		cout<<"\tevent_type="<<event_type<<"\tcol_type"<<col_type<<endl;
+//		cout<<"\t P1x="<<S.P[i].coordinate.x<<"\t P1y="<<S.P[i].coordinate.y;
+//		cout<<"\t P1z="<<S.P[i].coordinate.z<<endl;
+//		cout<<"\t P2x="<<S.P[j].coordinate.x<<"\t P2y="<<S.P[j].coordinate.y;
+//		cout<<"\t P2z="<<S.P[j].coordinate.z<<endl;
+//		cout<<"\t P1vx="<<S.P[i].velocity.vx<<"\t P1vy="<<S.P[i].velocity.vy;
+//		cout<<"\t P1vz="<<S.P[i].velocity.vz<<endl;
+//		cout<<"\t P2vx="<<S.P[j].velocity.vx<<"\t P2vy="<<S.P[j].velocity.vy;
+//		cout<<"\t P2vz="<<S.P[j].velocity.vz<<endl;
 		TimeList[i] = t;
 		Partner[i] = j;
 		Collision_type[i] = col_type;

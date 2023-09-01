@@ -10,7 +10,7 @@ class ReadInput
 		System initialize;
 //Help message in case of -h flag
 	void printHelpMessage();				
-//TO set the parameters from the command line
+//To set the parameters from the command line
 	int ReadVariables(int, vector<string>);
 };
 #endif

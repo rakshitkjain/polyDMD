@@ -1,4 +1,4 @@
-PROG = MD
+PROG = DMD
 #PROG1 = RDF
 
 SRC = main.cpp system.cpp timecalc.cpp collision.cpp rdf.cpp writefiles.cpp readinput.cpp readfiles.cpp

@@ -1,4 +1,4 @@
-//DMD: MAIN CODE (Revision Date: 7th Jan 2020)
+//DMD: MAIN CODE (Revision Date: 29th August 2023)
 #include "header.h"
 #include "system.h"
 #include "timecalc.h"
@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-	int a,i, f, col_counter, ghost_counter = 0;
+	int a,i, f, col_counter, ghost_counter = 0, fpupdate_counter = 0;
 	double tmin, tmin1, start_time;
 //Initial and Final kinetic and total energy
 	double eni_ke = 0, enf_ke = 0, eni_te = 0, enf_te = 0;			
@@ -81,14 +81,16 @@ int main(int argc, char *argv[])
 //Main collision loop starts
 	for (a=1; int(double(a)/double(C.TC.S.N))<C.TC.S.nsweep; a++)
 	{
+		cout<<"Entered loop"<<endl;
 		//The system has a thermostat applied
 		if(C.TC.S.andersen_freq != 0)
 		{
-			//Apply the thermostat in this step
-			if(a%C.TC.S.andersen_freq==0 && int(double(a)/double(C.TC.S.N))<C.TC.S.burn_percent*C.TC.S.nsweep)
+			//Apply the thermostat in this step, skip burn percent
+			if(a%C.TC.S.andersen_freq==0 && int(double(a)/double(C.TC.S.N))>=C.TC.S.burn_percent*C.TC.S.nsweep)
 			{
 				//Thermostat, returns the particle on which it is applied
 				thermostat_particle = C.AndersenThermostat();
+				cout<<"The thermostat_particle is: "<<thermostat_particle<<endl;
 				//When thermostat, count as ghost collision					
 				ghost_counter = ghost_counter +1;
 				//Now you have to re-form the timelist of the concerned particle(s)
@@ -98,14 +100,14 @@ int main(int argc, char *argv[])
 					//Updating timelist after collision
 					for (int i=0; i<C.TC.S.N; i++)
 					{
-						if(i==thermostat_particle||C.TC.Partner[i]==thermostat_particle)
+						if(i==thermostat_particle || C.TC.Partner[i]==thermostat_particle)
 						{				
 							C.TC.UpdateUpCellList(i, C.TC.S.N);
 						}
 					}	
 					C.TC.UpdateDownCellList(thermostat_particle, C.TC.S.N);
 				}
-				//Using both celllist and neighborlist, but just updating neighborlist
+				//Using both celllist and neighborlist, but just updating neighborlist, edit made to update all uplist after thermostat
 				else if(C.TC.S.celllist_counter && C.TC.S.neighborlist_counter)
 				{
 					//Updating timelist after collision
@@ -121,7 +123,18 @@ int main(int argc, char *argv[])
 				//Neither celllist nor neighborlist used
 				else if(!(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 				{
-					//Updating timelist after collision
+/*					for (i=0; i<C.TC.S.N; i++)
+					{
+						if(i==C.TC.collider)
+							{cout<<"i for C.TC.collider="<<C.TC.collider<<endl;}
+						if(C.TC.Partner[i]==C.TC.collider)
+							{cout<<"i for C.TC.Partner[i]="<<i<<endl;}
+						if(i==C.TC.col_partner)
+							{cout<<"i for C.TC.col_partner="<<i<<endl;}
+						if(C.TC.Partner[i]==C.TC.col_partner)
+							{cout<<"i for C.TC.Partner[i]=C.TC.col_partner="<<i<<endl;}
+					}
+					//Updating timelist after collision*/
 					for (int i=0; i<C.TC.S.N; i++)
 					{
 						if(i==thermostat_particle||C.TC.Partner[i]==thermostat_particle)
@@ -157,10 +170,18 @@ int main(int argc, char *argv[])
 				cout<<"Overlap of particles inside the simulation run, so ending simulation at run number ="<<a<<"and TIME= "<<C.TC.S.TIME<<endl;
 				goto exit;
 			}
+
 		//Rewriting fpupdate_TIME to the last time when system was updated
 			C.TC.S.fpupdate_TIME=C.TC.S.TIME;
+			fpupdate_counter=fpupdate_counter+1;
+		//Writing restart, datafiles and updating RDF everytime when particles at actual positions
+			writer.WriteDump(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.L, C.TC.S.filename_out);
+			writer.RestartFile(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
+			writer.DCDWriteStep(C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
+			rdf.RDF_r(C.TC.S.L, C.TC.S.N, C.TC.S.P, C.TC.S.maxbin);
 		}
 		//If only cell list, use cell list functions
+
 		if(C.TC.S.celllist_counter && (!C.TC.S.neighborlist_counter))
 		{
 			if(C.didcellchange)
@@ -256,7 +277,18 @@ int main(int argc, char *argv[])
 		//neither celllist not neighborlist used
 		else if(!(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 		{
-			//Updating timelist after collision
+/*			for (i=0; i<C.TC.S.N; i++)
+			{
+				if(i==C.TC.collider)
+				{cout<<"i for C.TC.collider="<<C.TC.collider<<endl;}
+				if(C.TC.Partner[i]==C.TC.collider)
+				{cout<<"i for C.TC.Partner[i]="<<i<<endl;}
+				if(i==C.TC.col_partner)
+				{cout<<"i for C.TC.col_partner="<<i<<endl;}
+				if(C.TC.Partner[i]==C.TC.col_partner)
+				{cout<<"i for C.TC.Partner[i]=C.TC.col_partner="<<i<<endl;}
+			}
+			//Updating timelist after collision*/
 			for (i=0; i<C.TC.S.N; i++)
 			{
 				if(i == C.TC.collider || C.TC.Partner[i] == C.TC.collider || i == C.TC.col_partner || C.TC.Partner[i] == C.TC.col_partner)
@@ -280,27 +312,25 @@ int main(int argc, char *argv[])
 			C.TC.minimum_time = tmin;
 			C.TC.collider = col_counter;
 		}
+
 		if(C.TC.collider == C.TC.S.N)
 		{
 			cout<<"Crashing due to wrong assigment of the particle being moved"<<endl;
 			exit(1);
 		}
-		//Writing restart, datafiles and upating RDF after every fixed no. of collisions
-		if(a%(C.TC.S.print_freq*C.TC.S.fpupdate_freq) == 0)
-		{
-			writer.WriteDump(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.L, C.TC.S.filename_out);
-			writer.RestartFile(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
-			writer.DCDWriteStep(C.TC.S.P, C.TC.S.N, C.TC.S.filename_out);
-			rdf.RDF_r(C.TC.S.L, C.TC.S.N, C.TC.S.P, C.TC.S.maxbin);
-		}
-//			writer.WriteDump(C.TC.S.TIME, C.TC.S.P, C.TC.S.N, C.TC.S.L, C.TC.S.filename_out);
 
+		//Data printed at every update frequency
+		if(a%int(C.TC.S.print_freq*C.TC.S.fpupdate_freq) == 0)
+		{
 		//Calculation of KE, PE, TE, momentum
-		kineticenergy = C.TC.S.ke(C.TC.S.P, C.TC.S.N);
-		totalenergy = kineticenergy + C.TC.S.potential_energy;		
-		momentum = C.TC.S.net_momentum(C.TC.S.P, C.TC.S.N);						
+			kineticenergy = C.TC.S.ke(C.TC.S.P, C.TC.S.N);
+			totalenergy = kineticenergy + C.TC.S.potential_energy;		
+			momentum = C.TC.S.net_momentum(C.TC.S.P, C.TC.S.N);						
 		//Time variation file printing
-		writer.TimeVarFile(C.TC.S.TIME, kineticenergy, C.TC.S.potential_energy, totalenergy, momentum, C.TC.S.filename_out);
+			writer.TimeVarFile(C.TC.S.TIME, kineticenergy, C.TC.S.potential_energy, totalenergy, momentum, C.TC.S.filename_out);
+		}
+
+
 //		if(a%50 == 0 && !(C.TC.S.celllist_counter) && !(C.TC.S.neighborlist_counter))
 //		{			
 //				{C.TC.Collision_time(C.TC.S.L, C.TC.S.N);}				
@@ -329,7 +359,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -345,7 +376,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -360,7 +392,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -375,7 +408,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -390,7 +424,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -405,7 +440,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -420,7 +456,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -435,7 +472,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
@@ -450,7 +488,8 @@ int main(int argc, char *argv[])
                                 out<<"Time in DMD units: "<<C.TC.S.TIME<<endl;
                                 out<<"No. of bond_cols: "<<C.bondcol_counter<<"\t No. of sqw_cols: ";
 				out<<C.swcol_counter<<"\t No. of cellchanges: "<<C.cellchange_counter;
-				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter<<endl;
+				out<<"\t No. of nbrlistchanges: "<<C.nbrmove_counter;
+				out<<"\t No. of FP updates"<<fpupdate_counter<<endl;
                                 out<<"Start time: "<<ctime(&initialization_time)<<"Completion time: ";
 				out<<ctime(&percent_time)<<endl;
                         out.close();
